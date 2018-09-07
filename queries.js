@@ -99,10 +99,40 @@ const removeMember = (req, res, next) => {
     });
 };
 
+const getAllDebits = (req, res, next) => {
+  db.any("select * from debits")
+    .then(function(data) {
+      res.status(200).json({
+        status: "success",
+        data: data,
+        message: "Retrieved ALL debits"
+      });
+    })
+    .catch(function(err) {
+      return next(err);
+    });
+};
+
+const getAllCredits = (req, res, next) => {
+  db.any("select * from credits")
+    .then(function(data) {
+      res.status(200).json({
+        status: "success",
+        data: data,
+        message: "Retrieved ALL credits"
+      });
+    })
+    .catch(function(err) {
+      return next(err);
+    });
+};
+
 module.exports = {
   getAllMembers: getAllMembers,
   getSingleMember: getSingleMember,
   createMember: createMember,
   updateMember: updateMember,
-  removeMember: removeMember
+  removeMember: removeMember,
+  getAllDebits: getAllDebits,
+  getAllCredits: getAllCredits
 };

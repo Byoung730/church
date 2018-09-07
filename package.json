@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon app.js"
+    "dev (not working)": "nodemon app.js"
   },
   "dependencies": {
     "bluebird": "^3.5.2",

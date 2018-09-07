@@ -115,7 +115,7 @@ const getAllDebits = (req, res, next) => {
 
 const getSingleDebit = (req, res, next) => {
   const transactionID = parseInt(req.params.transaction_id);
-  db.one("select * from debits where transaction_id = $1", debitID)
+  db.one("select * from debits where transaction_id = $1", transactionID)
     .then(function(data) {
       res.status(200).json({
         status: "success",

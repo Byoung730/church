@@ -272,6 +272,91 @@ const removeCredit = (req, res, next) => {
     });
 };
 
+const getAllBlogs = (req, res, next) => {
+  db.any("select * from blogs")
+    .then(function(data) {
+      res.status(200).json({
+        status: "success",
+        data: data,
+        message: "Retrieved ALL blogs"
+      });
+    })
+    .catch(function(err) {
+      return next(err);
+    });
+};
+
+const getSingleBlog = (req, res, next) => {
+  const blogID = parseInt(req.params.blog_id);
+  db.one("select * from blogs where blog_id = $1", blogID)
+    .then(function(data) {
+      res.status(200).json({
+        status: "success",
+        data: data,
+        message: "Retrieved ONE blog"
+      });
+    })
+    .catch(function(err) {
+      return next(err);
+    });
+};
+
+const createBlog = (req, res, next) => {
+  req.body.blog_id = parseInt(req.body.blog_id);
+  db.none(
+    "insert into blogs(member_id, title, post, posted_date)" +
+      "values(${member_id}, ${title}, ${post}, ${posted_date})",
+    req.body
+  )
+    .then(function() {
+      res.status(200).json({
+        status: "success",
+        message: "Inserted one blog"
+      });
+    })
+    .catch(function(err) {
+      return next(err);
+    });
+};
+
+const updateBlog = (req, res, next) => {
+  db.none(
+    "update blogs set member_id=$1, title=$2, post=$3, posted_date=$4 where blog_id=$5",
+    [
+      req.body.member_id,
+      req.body.title,
+      req.body.post,
+      req.body.posted_date,
+      parseInt(req.params.blog_id)
+    ]
+  )
+    .then(function() {
+      res.status(200).json({
+        status: "success",
+        message: "Updated blog"
+      });
+    })
+    .catch(function(err) {
+      return next(err);
+    });
+};
+
+const removeBlog = (req, res, next) => {
+  const blogID = parseInt(req.params.blog_id);
+  db.result("delete from blogs where blog_id = $1", blogID)
+    .then(function(result) {
+      /* jshint ignore:start */
+      res.status(200).json({
+        status: "success",
+        message: `Removed ${result.rowCount} blog`
+      });
+      /* jshint ignore:end */
+    })
+    .catch(function(err) {
+      return next(err);
+    });
+};
+
 module.exports = {
   getAllMembers: getAllMembers,
   getSingleMember: getSingleMember,

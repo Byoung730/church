@@ -1,12 +1,12 @@
-var promise = require("bluebird");
+const promise = require("bluebird");
 
-var options = {
+const options = {
   promiseLib: promise
 };
 
-var pgp = require("pg-promise")(options);
-var connectionString = "postgres://localhost:5432/church";
-var db = pgp(connectionString);
+const pgp = require("pg-promise")(options);
+const connectionString = "postgres://localhost:5432/church";
+const db = pgp(connectionString);
 
 const getAllMembers = (req, res, next) => {
   db.any("select * from members")
@@ -372,5 +372,10 @@ module.exports = {
   getSingleCredit: getSingleCredit,
   createCredit: createCredit,
   updateCredit: updateCredit,
-  removeCredit: removeCredit
+  removeCredit: removeCredit,
+  getAllBlogs: getAllBlogs,
+  getSingleBlog: getSingleBlog,
+  createBlog: createBlog,
+  updateBlog: updateBlog,
+  removeBlog: removeBlog
 };

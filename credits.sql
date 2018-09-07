@@ -9,7 +9,7 @@ CREATE TABLE credits (
   utilities FLOAT,
   upkeep FLOAT,
   miscellaneous FLOAT,
-  transaction_date DATE,
+  transaction_out_date DATE,
   FOREIGN KEY (member_id) references members(member_id)
 );
 

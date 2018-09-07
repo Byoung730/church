@@ -23,8 +23,8 @@ const getAllMembers = (req, res, next) => {
 };
 
 const getSingleMember = (req, res, next) => {
-  const memberID = parseInt(req.params.id);
-  db.one("select * from members where id = $1", memberID)
+  const memberID = parseInt(req.params.member_id);
+  db.one("select * from members where member_id = $1", memberID)
     .then(function(data) {
       res.status(200).json({
         status: "success",
@@ -38,7 +38,7 @@ const getSingleMember = (req, res, next) => {
 };
 
 const createMember = (req, res, next) => {
-  req.body.age = parseInt(req.body.age);
+  req.body.member_id = parseInt(req.body.member_id);
   db.none(
     "insert into members(email, first_name, last_name, address, phone, staff, photos, gender, date_joined, date_baptized)" +
       "values(${email}, ${first_name}, ${last_name}, ${address}, ${phone}, ${staff}, ${photos}, ${gender}, ${date_joined}, ${date_baptized})",
@@ -69,7 +69,7 @@ const updateMember = (req, res, next) => {
       req.body.gender,
       req.body.date_joined,
       req.body.date_baptized,
-      parseInt(req.params.id)
+      parseInt(req.params.member_id)
     ]
   )
     .then(function() {
@@ -84,8 +84,8 @@ const updateMember = (req, res, next) => {
 };
 
 const removeMember = (req, res, next) => {
-  const memberID = parseInt(req.params.id);
-  db.result("delete from members where id = $1", memberID)
+  const memberID = parseInt(req.params.member_id);
+  db.result("delete from members where member_id = $1", memberID)
     .then(function(result) {
       /* jshint ignore:start */
       res.status(200).json({

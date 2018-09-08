@@ -1,16 +1,17 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { BrowserModule } from "@angular/platform-browser";
+import { NgModule } from "@angular/core";
+import { HttpClientModule } from "@angular/common/http";
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { PersonListComponent } from './person-list/person-list.component';
-import { PersonCreateComponent } from './person-create/person-create.component';
-import { DebitListComponent } from './debit-list/debit-list.component';
-import { DebitCreateComponent } from './debit-create/debit-create.component';
-import { CreditListComponent } from './credit-list/credit-list.component';
-import { CreditCreateComponent } from './credit-create/credit-create.component';
-import { BlogListComponent } from './blog-list/blog-list.component';
-import { BlogCreateComponent } from './blog-create/blog-create.component';
+import { AppRoutingModule } from "./app-routing.module";
+import { AppComponent } from "./app.component";
+import { PersonListComponent } from "./person-list/person-list.component";
+import { PersonCreateComponent } from "./person-create/person-create.component";
+import { DebitListComponent } from "./debit-list/debit-list.component";
+import { DebitCreateComponent } from "./debit-create/debit-create.component";
+import { CreditListComponent } from "./credit-list/credit-list.component";
+import { CreditCreateComponent } from "./credit-create/credit-create.component";
+import { BlogListComponent } from "./blog-list/blog-list.component";
+import { BlogCreateComponent } from "./blog-create/blog-create.component";
 
 @NgModule({
   declarations: [
@@ -24,11 +25,8 @@ import { BlogCreateComponent } from './blog-create/blog-create.component';
     BlogListComponent,
     BlogCreateComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

@@ -1,3 +1,43 @@
-<p>
-  person-list works!
-</p>
+<h1>
+Our People
+</h1>
+<div>
+<table style="width:100%">
+<tr>
+<th>Email</th>
+<th>First Name</th>
+<th>Last Name</th>
+<th>Address</th>
+<th>Phone</th>
+<th>Staff</th>
+<th>Photos</th>
+<th>Gender</th>
+<th>Date Joined</th>
+<th>Date Baptized</th>
+<th>Birthdate</th>
+<th>Date Deceased</th>
+<th>Marital Status</th>
+<th>Number Private</th>
+<th>Allow Texts</th>
+<th>Allow Email</th>
+</tr>
+<tr *ngFor="let person of people">
+<td> { { contact.email } } </td>
+<td> { { contact.first_name } } </td>
+<td> { { contact.last_name } } </td>
+<td> { { contact.address } } </td>
+<td> { { contact.phone } } </td>
+<td> { { contact.staff } } </td>
+<td> { { contact.photos } } </td>
+<td> { { contact.gender } } </td>
+<td> { { contact.date_joined } } </td>
+<td> { { contact.date_baptized } } </td>
+<td> { { contact.birthdate } } </td>
+<td> { { contact.date_deceased } } </td>
+<td> { { contact.marital_status } } </td>
+<td> { { contact.number_private } } </td>
+<td> { { contact.allow_texts } } </td>
+<td> { { contact.allow_email } } </td>
+</tr>
+</table>
+</div>

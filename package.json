@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "this is for the": "node/api back end",
     "angular": "ng serve",
     "start": "node ./bin/www",
     "dev (not working)": "nodemon app.js"

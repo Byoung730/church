@@ -8,13 +8,13 @@ const pgp = require("pg-promise")(options);
 const connectionString = "postgres://localhost:5432/church";
 const db = pgp(connectionString);
 
-const getAllMembers = (req, res, next) => {
-  db.any("select * from members")
+const getAllPeople = (req, res, next) => {
+  db.any("select * from people")
     .then(function(data) {
       res.status(200).json({
         status: "success",
         data: data,
-        message: "Retrieved ALL members"
+        message: "Retrieved ALL people"
       });
     })
     .catch(function(err) {
@@ -22,14 +22,14 @@ const getAllMembers = (req, res, next) => {
     });
 };
 
-const getSingleMember = (req, res, next) => {
-  const memberID = parseInt(req.params.member_id);
-  db.one("select * from members where member_id = $1", memberID)
+const getSinglePerson = (req, res, next) => {
+  const personID = parseInt(req.params.person_id);
+  db.one("select * from people where person_id = $1", personID)
     .then(function(data) {
       res.status(200).json({
         status: "success",
         data: data,
-        message: "Retrieved ONE member"
+        message: "Retrieved ONE person"
       });
     })
     .catch(function(err) {
@@ -37,17 +37,17 @@ const getSingleMember = (req, res, next) => {
     });
 };
 
-const createMember = (req, res, next) => {
-  req.body.member_id = parseInt(req.body.member_id);
+const createPerson = (req, res, next) => {
+  req.body.person_id = parseInt(req.body.person_id);
   db.none(
-    "insert into members(email, first_name, last_name, address, phone, staff, photos, gender, date_joined, date_baptized)" +
-      "values(${email}, ${first_name}, ${last_name}, ${address}, ${phone}, ${staff}, ${photos}, ${gender}, ${date_joined}, ${date_baptized})",
+    "insert into people(email, first_name, last_name, address, phone, staff, photos, gender, date_joined, date_baptized, birthdate, date_deceased, marital_status, number_private, allow_texts, allow_email)" +
+      "values(${email}, ${first_name}, ${last_name}, ${address}, ${phone}, ${staff}, ${photos}, ${gender}, ${date_joined}, ${date_baptized}, ${birthdate}, ${date_deceased}, ${marital_status}, ${number_private}, ${allow_texts}, ${allow_email})",
     req.body
   )
     .then(function() {
       res.status(200).json({
         status: "success",
-        message: "Inserted one member"
+        message: "Inserted one person"
       });
     })
     .catch(function(err) {
@@ -55,9 +55,9 @@ const createMember = (req, res, next) => {
     });
 };
 
-const updateMember = (req, res, next) => {
+const updatePerson = (req, res, next) => {
   db.none(
-    "update members set email=$1, first_name=$2, last_name=$3, address=$4, phone=$5, staff=$6, photos=$7, gender=$8, date_joined=$9, date_baptized=$10 where id=$11",
+    "update people set email=$1, first_name=$2, last_name=$3, address=$4, phone=$5, staff=$6, photos=$7, gender=$8, date_joined=$9, date_baptized=$10, birthdate=$11, date_deceased=$12, marital_status=$13, number_private=$14, allow_texts=$15, allow_email=$16 where id=$17",
     [
       req.body.email,
       req.body.first_name,
@@ -69,13 +69,19 @@ const updateMember = (req, res, next) => {
       req.body.gender,
       req.body.date_joined,
       req.body.date_baptized,
-      parseInt(req.params.member_id)
+      req.body.birthdate,
+      req.body.date_deceased,
+      req.body.marital_status,
+      req.body.number_private,
+      req.body.allow_texts,
+      req.body.allow_email,
+      parseInt(req.params.person_id)
     ]
   )
     .then(function() {
       res.status(200).json({
         status: "success",
-        message: "Updated member"
+        message: "Updated person"
       });
     })
     .catch(function(err) {
@@ -83,14 +89,14 @@ const updateMember = (req, res, next) => {
     });
 };
 
-const removeMember = (req, res, next) => {
-  const memberID = parseInt(req.params.member_id);
-  db.result("delete from members where member_id = $1", memberID)
+const removePerson = (req, res, next) => {
+  const personID = parseInt(req.params.person_id);
+  db.result("delete from people where person_id = $1", personID)
     .then(function(result) {
       /* jshint ignore:start */
       res.status(200).json({
         status: "success",
-        message: `Removed ${result.rowCount} member`
+        message: `Removed ${result.rowCount} person`
       });
       /* jshint ignore:end */
     })
@@ -131,8 +137,8 @@ const getSingleDebit = (req, res, next) => {
 const createDebit = (req, res, next) => {
   req.body.transaction_id = parseInt(req.body.transaction_id);
   db.none(
-    "insert into debits(member_id, donations, tithes, collection, miscellaneous, transaction_date)" +
-      "values(${member_id}, ${donations}, ${tithes}, ${collection}, ${miscellaneous}, ${transaction_date})",
+    "insert into debits(person_id, donations, tithes, collection, miscellaneous, transaction_date)" +
+      "values(${person_id}, ${donations}, ${tithes}, ${collection}, ${miscellaneous}, ${transaction_date})",
     req.body
   )
     .then(function() {
@@ -148,15 +154,15 @@ const createDebit = (req, res, next) => {
 
 const updateDebit = (req, res, next) => {
   db.none(
-    "update debits set member_id=$1, donations=$2, tithes=$3, collection=$4, miscellaneous=$5, transaction_date=$6 where transaction_id=$7",
+    "update debits set person_id=$1, donations=$2, tithes=$3, collection=$4, miscellaneous=$5, transaction_date=$6 where transaction_id=$7",
     [
-      req.body.member_id,
+      req.body.person_id,
       req.body.donations,
       req.body.tithes,
       req.body.collection,
       req.body.miscellaneous,
       req.body.transaction_date,
-      parseInt(req.params.member_id)
+      parseInt(req.params.person_id)
     ]
   )
     .then(function() {
@@ -202,7 +208,10 @@ const getAllCredits = (req, res, next) => {
 
 const getSingleCredit = (req, res, next) => {
   const transactionOutID = parseInt(req.params.transaction_out_id);
-  db.one("select * from credits where member_id = $1", transactionOutID)
+  db.one(
+    "select * from credits where transaction_out_id = $1",
+    transactionOutID
+  )
     .then(function(data) {
       res.status(200).json({
         status: "success",
@@ -218,8 +227,8 @@ const getSingleCredit = (req, res, next) => {
 const createCredit = (req, res, next) => {
   req.body.transaction_out_id = parseInt(req.body.transaction_out_id);
   db.none(
-    "insert into credits(member_id, salaries, utilities, upkeep, miscellaneous, transaction_out_date)" +
-      "values(${member_id}, ${salaries}, ${utilities}, ${upkeep}, ${miscellaneous}, ${transaction_out_date})",
+    "insert into credits(person_id, salaries, utilities, upkeep, miscellaneous, transaction_out_date)" +
+      "values(${person_id}, ${salaries}, ${utilities}, ${upkeep}, ${miscellaneous}, ${transaction_out_date})",
     req.body
   )
     .then(function() {
@@ -235,9 +244,9 @@ const createCredit = (req, res, next) => {
 
 const updateCredit = (req, res, next) => {
   db.none(
-    "update credits set member_id=$1, salaries=$2, utilities=$3, upkeep=$4, miscellaneous=$5 where transaction_out_id=$6",
+    "update credits set person_id=$1, salaries=$2, utilities=$3, upkeep=$4, miscellaneous=$5 where transaction_out_id=$6",
     [
-      req.body.member_id,
+      req.body.person_id,
       req.body.salaries,
       req.body.utilities,
       req.body.upkeep,
@@ -304,8 +313,8 @@ const getSingleBlog = (req, res, next) => {
 const createBlog = (req, res, next) => {
   req.body.blog_id = parseInt(req.body.blog_id);
   db.none(
-    "insert into blogs(member_id, title, post, posted_date)" +
-      "values(${member_id}, ${title}, ${post}, ${posted_date})",
+    "insert into blogs(person_id, title, post, posted_date)" +
+      "values(${person_id}, ${title}, ${post}, ${posted_date})",
     req.body
   )
     .then(function() {
@@ -321,9 +330,9 @@ const createBlog = (req, res, next) => {
 
 const updateBlog = (req, res, next) => {
   db.none(
-    "update blogs set member_id=$1, title=$2, post=$3, posted_date=$4 where blog_id=$5",
+    "update blogs set person_id=$1, title=$2, post=$3, posted_date=$4 where blog_id=$5",
     [
-      req.body.member_id,
+      req.body.person_id,
       req.body.title,
       req.body.post,
       req.body.posted_date,
@@ -358,11 +367,11 @@ const removeBlog = (req, res, next) => {
 };
 
 module.exports = {
-  getAllMembers: getAllMembers,
-  getSingleMember: getSingleMember,
-  createMember: createMember,
-  updateMember: updateMember,
-  removeMember: removeMember,
+  getAllPeople: getAllPeople,
+  getSinglePerson: getSinglePerson,
+  createPerson: createPerson,
+  updatePerson: updatePerson,
+  removePerson: removePerson,
   getAllDebits: getAllDebits,
   getSingleDebit: getSingleDebit,
   createDebit: createDebit,
